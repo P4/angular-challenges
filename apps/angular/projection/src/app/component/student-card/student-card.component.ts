@@ -12,7 +12,6 @@ import { CardComponent } from '../../ui/card/card.component';
   template: `
     <app-card
       [list]="students"
-      customClass="bg-light-green"
       (add)="addStudent()"
       (delete)="deleteStudent($event)">
       <img src="assets/img/student.webp" width="200px" />
@@ -21,7 +20,7 @@ import { CardComponent } from '../../ui/card/card.component';
   standalone: true,
   styles: [
     `
-      ::ng-deep .bg-light-green {
+      app-card {
         background-color: rgba(0, 250, 0, 0.1);
       }
     `,

@@ -12,7 +12,6 @@ import { CardComponent } from '../../ui/card/card.component';
   template: `
     <app-card
       [list]="teachers"
-      customClass="bg-light-red"
       (add)="addTeacher()"
       (delete)="deleteTeacher($event)">
       <img src="assets/img/teacher.png" width="200px" />
@@ -20,7 +19,7 @@ import { CardComponent } from '../../ui/card/card.component';
   `,
   styles: [
     `
-      ::ng-deep .bg-light-red {
+      app-card {
         background-color: rgba(250, 0, 0, 0.1);
       }
     `,
