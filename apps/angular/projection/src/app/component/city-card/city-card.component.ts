@@ -11,7 +11,7 @@ import { ListItemComponent } from '../../ui/list-item/list-item.component';
 @Component({
   selector: 'app-city-card',
   template: `
-    <app-card #card [list]="cities$ | async" (add)="addCity()">
+    <app-card #card [list]="cities()" (add)="addCity()">
       <img src="assets/img/city.png" alt="" width="200" />
       <app-list-item
         *appCardItem="let item of card"
@@ -24,7 +24,7 @@ import { ListItemComponent } from '../../ui/list-item/list-item.component';
   imports: [CardComponent, CardItemDirective, AsyncPipe, ListItemComponent],
 })
 export class CityCardComponent implements OnInit {
-  protected readonly cities$ = this.store.cities$;
+  protected readonly cities = this.store.cities;
 
   constructor(
     private http: FakeHttpService,
