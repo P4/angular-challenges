@@ -5,16 +5,19 @@ import {
 } from '../../data-access/fake-http.service';
 import { TeacherStore } from '../../data-access/teacher.store';
 import { Teacher } from '../../model/teacher.model';
-import { CardComponent } from '../../ui/card/card.component';
+import { CardComponent, CardItemDirective } from '../../ui/card/card.component';
+import { ListItemComponent } from '../../ui/list-item/list-item.component';
 
 @Component({
   selector: 'app-teacher-card',
   template: `
-    <app-card
-      [list]="teachers"
-      (add)="addTeacher()"
-      (delete)="deleteTeacher($event)">
+    <app-card [list]="teachers" (add)="addTeacher()">
       <img src="assets/img/teacher.png" width="200px" />
+      <app-list-item
+        *appCardItem="let item of teachers"
+        [name]="item.firstName"
+        [id]="item.id"
+        (delete)="deleteTeacher($event)"></app-list-item>
     </app-card>
   `,
   styles: [
@@ -25,7 +28,7 @@ import { CardComponent } from '../../ui/card/card.component';
     `,
   ],
   standalone: true,
-  imports: [CardComponent],
+  imports: [CardComponent, CardItemDirective, ListItemComponent],
 })
 export class TeacherCardComponent implements OnInit {
   teachers: Teacher[] = [];

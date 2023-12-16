@@ -1,17 +1,44 @@
-import { NgFor } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { NgFor, NgTemplateOutlet } from '@angular/common';
+import {
+  Component,
+  ContentChild,
+  Directive,
+  EventEmitter,
+  Input,
+  Output,
+  TemplateRef,
+} from '@angular/core';
 import { ListItemComponent } from '../list-item/list-item.component';
+
+interface Ctx<T> {
+  $implicit: T;
+}
+
+@Directive({ selector: '[appCardItem]', standalone: true })
+export class CardItemDirective<T> {
+  constructor(readonly ref: TemplateRef<Ctx<T>>) {}
+  /**
+   * Improve type checking by passing a reference to the list of items or the surrounding cards.
+   */
+  @Input() appCardItemOf?: T[] | CardComponent<T>;
+  // type the context
+  static ngTemplateContextGuard<T>(
+    dir: CardItemDirective<T>,
+    context: unknown,
+  ): context is Ctx<T> {
+    return true;
+  }
+}
 
 @Component({
   selector: 'app-card',
   template: `
     <ng-content select="img"></ng-content>
     <section>
-      <app-list-item
-        *ngFor="let item of list"
-        [name]="item.firstName"
-        [id]="item.id"
-        (delete)="delete.emit($event)"></app-list-item>
+      <ng-container *ngFor="let item of list">
+        <ng-container
+          *ngTemplateOutlet="tpl; context: { $implicit: item }"></ng-container>
+      </ng-container>
     </section>
 
     <button
@@ -24,11 +51,13 @@ import { ListItemComponent } from '../list-item/list-item.component';
     class: 'flex w-fit flex-col gap-3 rounded-md border-2 border-black p-4',
   },
   standalone: true,
-  imports: [NgFor, ListItemComponent],
+  imports: [NgFor, NgTemplateOutlet, ListItemComponent],
 })
-export class CardComponent {
-  @Input() list: any[] | null = null;
+export class CardComponent<T> {
+  @Input() list: T[] | null = null;
+
+  @ContentChild(CardItemDirective, { read: TemplateRef })
+  tpl!: TemplateRef<Ctx<T>>;
 
   @Output() readonly add = new EventEmitter<void>();
-  @Output() readonly delete = new EventEmitter<number>();
 }
